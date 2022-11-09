@@ -69,8 +69,6 @@ class OrcaBaseParser(Parser):
 
         output_dict = _remove_nan(parsed_dict)
 
-        # keywords = output_dict['metadata']['keywords']
-
         if parsed_dict.get('optdone', False):
             # Change this when we drop AiiDA 1.x support
             #with out_folder.base.repository.open(fname_relaxed) as handler:
@@ -90,8 +88,11 @@ class OrcaBaseParser(Parser):
 
         pt = PeriodicTable()  #pylint: disable=invalid-name
 
-        output_dict['elements'] = [pt.element[Z] for Z in output_dict['atomnos'].tolist()]
+        if output_dict.get('atommnos'):
+            output_dict['elements'] = [pt.element[Z] for Z in output_dict['atomnos'].tolist()]
 
         self.out('output_parameters', Dict(dict=output_dict))
 
-        return ExitCode(0)
+        if output_dict.get('metadata') and output_dict['metadata'].get('success'):
+            return ExitCode(0)
+        return self.exit_codes.ERROR_CALCULATION_UNSUCCESSFUL
