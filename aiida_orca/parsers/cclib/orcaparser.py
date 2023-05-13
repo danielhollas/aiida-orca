@@ -821,7 +821,7 @@ Dispersion correction           -0.016199959
             self.mosyms = [[]]
 
             line = next(inputfile)
-            while len(line) > 20:  # restricted calcs are terminated by ------
+            while len(line) > 20 and line.split()[1] != 'SCF':  # restricted calcs are terminated by ------
                 info = line.split()
                 mooccno = int(float(info[1]))
                 moenergy = float(info[2])
